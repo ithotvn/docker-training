@@ -1,0 +1,29 @@
+version: '2'
+
+services:
+  php-fpm:
+    build:
+      context: ./
+      dockerfile: ./php/Dockerfile
+    volumes:
+      - ./webapp:/var/www/html
+    networks:
+      - php-network
+
+  nginx:
+    build:
+      context: ./
+      dockerfile: ./nginx/Dockerfile
+    links:
+      - php-fpm
+    ports:
+      - 8000:80
+    volumes:
+      - ./nginx:/etc/nginx/conf.d/
+      - ./webapp:/var/www/html
+    networks:
+      - php-network
+
+networks:
+  php-network:
+    driver: bridge
